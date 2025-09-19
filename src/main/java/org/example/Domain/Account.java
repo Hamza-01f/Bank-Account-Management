@@ -20,6 +20,9 @@ public class Account {
            this.createdAt = LocalDateTime.now();
     }
 
+    public Account(){
+
+    }
     public void deposit(BigDecimal amount){
         this.balance = this.balance.add(amount);
     }
@@ -64,6 +67,14 @@ public class Account {
                 ", createdAt = " + createdAt +
                 ", status : " + (isActive ? "ACTIVE" : "NOT ACTIVE") +
                 "}";
+    }
+
+    public void setIsActive(){
+        this.isActive = false;
+    }
+
+    public boolean getIsActive(){
+        return this.isActive;
     }
 
 }

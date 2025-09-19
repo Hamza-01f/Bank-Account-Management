@@ -18,7 +18,17 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
-        return new ArrayList<>(users.values());
+    public boolean updateProfile(String username , String email){
+        users.values()
+                .stream()
+                .filter(usr -> usr.getFullName().equals(username)).findFirst()
+                .ifPresent(usr -> usr.setUserName(username));
+
+        users.values()
+                .stream()
+                .filter(usr -> usr.getEmail().equals(email))
+                .findFirst().ifPresent(usr -> usr.setEmail(email));
+
+        return true;
     }
 }

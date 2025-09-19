@@ -1,6 +1,7 @@
 package org.example.Service;
 
 import org.example.Domain.Account;
+import org.example.Domain.User;
 import org.example.Repository.AccountRepository;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ public class AccountService {
 
     private  AccountRepository accountRepository;
     private final Random random = new Random();
+
 
     public AccountService(AccountRepository accountRepository){
         this.accountRepository = accountRepository;
@@ -40,8 +42,8 @@ public class AccountService {
         return accountRepository.findMyAccounts(ownerId);
     }
 
-    public List<Account> getAllAccounts(){
-        return  accountRepository.getAllAccounts();
+    public List<Account> getAllAccounts(UUID userId){
+        return  accountRepository.getAllAccounts(userId);
     }
     public boolean withdraw(String accountId , BigDecimal withdrawAmount){
         return accountRepository.withdraw(accountId , withdrawAmount);
@@ -51,7 +53,16 @@ public class AccountService {
         return  accountRepository.deposit(accountId , depositAmount);
     }
 
-//    public boolean transfer(){
-//
-//    }
+    public boolean changePassword(String password){
+        User user = new User();
+        user.setPassword(password);
+        return true;
+    }
+
+    public boolean closeAccount(String accountID){
+        accountRepository.closeAccount(accountID);
+        return  true;
+    }
+
+
 }

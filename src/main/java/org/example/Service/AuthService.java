@@ -31,6 +31,11 @@ public class AuthService {
         return false;
     }
 
+    public boolean updateProfile(String username , String  email){
+           userRepository.updateProfile(username , email);
+           return true;
+    }
+
     public void logout() {
         currentUser = null;
     }

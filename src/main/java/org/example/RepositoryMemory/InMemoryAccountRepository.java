@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class InMemoryAccountRepository implements AccountRepository {
 
     List<Account> savedAccounts = new ArrayList<>();
+    Account account = new Account();
 
     @Override
     public void save(Account account){
@@ -24,13 +25,13 @@ public class InMemoryAccountRepository implements AccountRepository {
     public List<Account> findMyAccounts(UUID ownerId){
        return  savedAccounts.stream()
                            .filter(account -> account.getUserId().equals(ownerId))
-                           .collect(Collectors.toList());
+                           .toList();
     }
 
     @Override
-    public List<Account> getAllAccounts(){
-        return savedAccounts.stream()
-                            .collect(Collectors.toList());
+    public List<Account> getAllAccounts(UUID userId){
+        return savedAccounts.stream().filter(account -> !account.getUserId().equals(userId))
+                            .toList();
     }
 
     @Override
@@ -65,6 +66,15 @@ public class InMemoryAccountRepository implements AccountRepository {
 
         account.deposit(depositAmount);
         return true;
+    }
+
+    @Override
+    public boolean closeAccount(String accountID){
+         savedAccounts.stream()
+                 .filter(account -> account.getAccountId().equals(accountID))
+                 .findFirst()
+                 .ifPresent(acc -> acc.setIsActive());
+         return true;
     }
 
     //
