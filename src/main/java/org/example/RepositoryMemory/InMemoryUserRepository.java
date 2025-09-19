@@ -31,4 +31,14 @@ public class InMemoryUserRepository implements UserRepository {
 
         return true;
     }
+
+    @Override
+    public boolean updatePassword(String password , UUID userId){
+         return users.values().stream()
+                      .filter(user -> user.getId().equals(userId))
+                      .findFirst().map(user -> {
+                          user.setPassword(password);
+                          return true;
+                      }).orElse(false);
+    }
 }

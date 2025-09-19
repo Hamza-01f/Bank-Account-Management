@@ -58,8 +58,6 @@ public class InMemoryAccountRepository implements AccountRepository {
                 .filter(acc -> acc.getAccountId().equals(accountId))
                 .findFirst();
 
-        if (accOpt.isEmpty()) return false;
-
         Account account = accOpt.get();
 
         if(!account.getStatus()) return false;
@@ -77,9 +75,5 @@ public class InMemoryAccountRepository implements AccountRepository {
          return true;
     }
 
-    //
 
-//    public boolean closeAccount(){
-//
-//    }
 }

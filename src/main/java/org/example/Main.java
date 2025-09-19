@@ -18,8 +18,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -28,6 +26,7 @@ public class Main {
         TransactionService transactionService = new TransactionService(new InMemoryTransactionRepository());
         Boolean accountSituation = true;
         User authenticatedUser = null;
+
         int choice;
         do {
             System.out.println("/---------------------------------------------------------------------------------/");
@@ -153,55 +152,57 @@ public class Main {
                                     System.out.println("3 Exit :");
                                     System.out.print("Enter your choice : ");
                                     choice = sc.nextInt();
+                                    sc.nextLine();
                                     if(choice == 1 ){
+
 
                                         List<Account> accountsList1 = accountService.getMyAccounts(authenticatedUser.getId());
                                         if(accountsList1.size() < 2){
                                             System.out.println("You need at least to have two accounts ");
                                             return;
                                         }
+
                                         System.out.println("Here is a list of your accounts ! ");
                                         accountsList1.forEach(System.out::println);
 
                                         System.out.print("choose the account you wanna transfer from : ");
-                                        String transferFrom = sc.nextLine();
-                                        sc.nextLine();
+                                        String transferFrom = sc.nextLine().trim();
+
                                         System.out.print("choose the account you wanna transfer to : ");
-                                        String transferTo = sc.nextLine();
+                                        String transferTo = sc.nextLine().trim();
 
                                         System.out.print("Enter the amount you wanna send to : ");
                                         BigDecimal amount = sc.nextBigDecimal();
+                                        sc.nextLine();
 
-                                        if(accountService.withdraw(transferFrom,amount) && accountService.deposit(transferTo,amount)){
-                                            transactionService.recordTransfer(authenticatedUser.getId() , transferFrom , transferTo , amount);
-                                            System.out.println(" the transfer went well ");
-                                        }else{
-                                            System.out.println("something went wrong the transaction did no went as expected!");
-                                        }
+                                        accountService.withdraw(transferFrom,amount);
+                                        accountService.deposit(transferTo,amount);
+
+                                        transactionService.recordTransfer(authenticatedUser.getId() , transferFrom , transferTo , amount , true);
+                                        System.out.println(" the transfer is done : ");
 
                                     } else if (choice == 2) {
                                         List<Account> allAccounts = accountService.getAllAccounts(authenticatedUser.getId());
                                         System.out.println("Here is a list of All accounts ! ");
                                         allAccounts.forEach(System.out::println);
 
-                                        System.out.print("choose the account you wish transfer to : ");
+                                        System.out.print("choose the account you wish to transfer to : ");
                                         String transferTo = sc.nextLine();
-                                        sc.nextLine();
+
                                         List<Account> accountsList1 = accountService.getMyAccounts(authenticatedUser.getId());
                                         System.out.println("//------------ here is a list of all of your accounts : ----//");
                                         System.out.print("choose the account you wanna transfer from : ");
                                         String transferFrom = sc.nextLine();
 
-                                        System.out.print("Enter the amount you wanna send to : ");
+                                        System.out.print("Enter the amount you wanna send  : ");
                                         BigDecimal amount = sc.nextBigDecimal();
+                                        sc.nextLine();
 
-                                        if(accountService.withdraw(transferFrom,amount) && accountService.deposit(transferTo,amount)){
-                                            transactionService.recordTransfer(authenticatedUser.getId() , transferFrom , transferTo , amount);
-                                            System.out.println(" the transfer went well ");
-                                        }else{
-                                            System.out.println("something went wrong the transaction did no went as expected!");
-                                            
-                                        }
+                                        accountService.withdraw(transferFrom,amount);
+                                        accountService.deposit(transferTo,amount);
+
+                                        transactionService.recordTransfer(authenticatedUser.getId() , transferFrom , transferTo , amount , false);
+                                        System.out.println(" the transfer went well ");
 
                                     }else{
                                         return;
@@ -237,7 +238,7 @@ public class Main {
 
                                     System.out.print("Enter Your new password : ");
                                     String NewPassword = sc.nextLine();
-                                    if(accountService.changePassword(NewPassword)){
+                                    if(authService.changePassword(NewPassword , authenticatedUser.getId())){
                                         System.out.println("You have changed your password with success : ");
                                     }else{
                                         System.out.println("Your password did not change : ");

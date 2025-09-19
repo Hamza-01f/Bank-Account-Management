@@ -20,7 +20,6 @@ public class User {
     public User(){
 
     }
-
     public UUID getId() { return id; }
     public String getFullName() { return fullName; }
     public String getEmail() { return email; }
@@ -29,6 +28,5 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public void setUserName(String username){ this.fullName = username; }
     public void setEmail(String email){ this.email = email; }
-
 
 }

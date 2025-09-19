@@ -25,9 +25,12 @@ public class TransactionService {
 
 
 
-    public void recordTransfer(UUID owner , String fromAccountId , String toAccountId , BigDecimal amount){
-//         transactionRepository.save(new Transaction(owner , fromAccountId , Transaction.Type.TRANSFEROUT , amount , toAccountId));
-         transactionRepository.save(new Transaction(owner , toAccountId , Transaction.Type.TRANSFERIN , amount , fromAccountId));
+    public void recordTransfer(UUID owner , String fromAccountId , String toAccountId , BigDecimal amount , boolean transferType){
+         if(transferType){
+             transactionRepository.save(new Transaction(owner , fromAccountId , Transaction.Type.TRANSFERIN , amount , toAccountId));
+         }else{
+             transactionRepository.save(new Transaction(owner , toAccountId , Transaction.Type.TRANSFEROUT , amount , fromAccountId));
+         }
     }
 
     public List<Transaction>  getTransactions(UUID ownerId){

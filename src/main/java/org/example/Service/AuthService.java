@@ -4,6 +4,7 @@ import org.example.Domain.User;
 import org.example.Repository.UserRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class AuthService {
     private final UserRepository userRepository;
@@ -34,6 +35,11 @@ public class AuthService {
     public boolean updateProfile(String username , String  email){
            userRepository.updateProfile(username , email);
            return true;
+    }
+
+    public boolean changePassword(String password , UUID userId){
+        userRepository.updatePassword(password , userId);
+        return true;
     }
 
     public void logout() {

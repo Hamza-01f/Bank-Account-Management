@@ -46,17 +46,17 @@ public class AccountService {
         return  accountRepository.getAllAccounts(userId);
     }
     public boolean withdraw(String accountId , BigDecimal withdrawAmount){
+        System.out.println("i am here is withdraw");
+        System.out.println(accountId);
+        System.out.println(withdrawAmount);
         return accountRepository.withdraw(accountId , withdrawAmount);
     }
 
     public boolean deposit(String accountId , BigDecimal depositAmount){
+        System.out.println("i am here in deposit");
+        System.out.println(accountId);
+        System.out.println(depositAmount);
         return  accountRepository.deposit(accountId , depositAmount);
-    }
-
-    public boolean changePassword(String password){
-        User user = new User();
-        user.setPassword(password);
-        return true;
     }
 
     public boolean closeAccount(String accountID){
