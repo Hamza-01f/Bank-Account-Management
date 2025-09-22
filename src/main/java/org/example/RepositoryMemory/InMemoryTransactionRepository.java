@@ -19,7 +19,7 @@ public class InMemoryTransactionRepository implements TransactionRepository {
   }
 
   @Override
-  public List<Transaction> findByAccountId(UUID ownerId){
+  public List<Transaction> findByUserId(UUID ownerId){
     return transactionList.stream()
                           .filter(transactions -> transactions.getOwnerId().equals(ownerId))
                           .sorted((t1 , t2 ) -> t1.getTimestamp().compareTo(t2.getTimestamp()))

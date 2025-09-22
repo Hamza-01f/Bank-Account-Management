@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class InMemoryAccountRepository implements AccountRepository {
+    public class InMemoryAccountRepository implements AccountRepository {
 
     List<Account> savedAccounts = new ArrayList<>();
     Account account = new Account();
@@ -22,16 +22,15 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public List<Account> findMyAccounts(UUID ownerId){
+    public List<Account> findByUserId(UUID ownerId){
        return  savedAccounts.stream()
                            .filter(account -> account.getUserId().equals(ownerId))
                            .toList();
     }
 
     @Override
-    public List<Account> getAllAccounts(UUID userId){
-        return savedAccounts.stream().filter(account -> !account.getUserId().equals(userId))
-                            .toList();
+    public Optional<Account> findById(String accountId){
+        return  savedAccounts.stream().filter(account -> account.getAccountId().equals(accountId)).findFirst();
     }
 
     @Override
@@ -75,5 +74,8 @@ public class InMemoryAccountRepository implements AccountRepository {
          return true;
     }
 
-
+    @Override
+    public List<Account> findAllAccounts(UUID ownerId){
+        return  savedAccounts.stream().filter(account -> !account.getUserId().equals(ownerId)).toList();
+    }
 }

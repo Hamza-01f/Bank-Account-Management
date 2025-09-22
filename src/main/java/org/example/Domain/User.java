@@ -17,9 +17,6 @@ public class User {
         this.password = password;
     }
 
-    public User(){
-
-    }
     public UUID getId() { return id; }
     public String getFullName() { return fullName; }
     public String getEmail() { return email; }

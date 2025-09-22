@@ -52,6 +52,9 @@ public class Account {
         return this.accountId;
     }
 
+    public LocalDateTime getCreatedAt(){
+        return this.createdAt;
+    }
     @Override
     public String toString(){
         return "{ accountId = " + accountId +

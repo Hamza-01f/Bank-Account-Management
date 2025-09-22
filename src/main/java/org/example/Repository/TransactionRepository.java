@@ -8,5 +8,7 @@ import java.util.UUID;
 public interface TransactionRepository {
 
     void save(Transaction transaction);
-    List<Transaction> findByAccountId(UUID ownerId);
+    List<Transaction> findByUserId(UUID userId);
+//    List<Transaction> findByAccountId(UUID userId, String accountId);
+//    List<Transaction> findByType(UUID userId, Transaction.Type type);
 }

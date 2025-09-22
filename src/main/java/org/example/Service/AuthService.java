@@ -18,16 +18,19 @@ public class AuthService {
         if (password.length() < 6) return false;
         if (userRepository.findByEmail(email).isPresent()) return false;
 
-        User user = new User(fullName, email,  password);
+        String hashedPassword = PasswordService.hashPassword(password);
+        User user = new User(fullName, email,  hashedPassword);
         userRepository.save(user);
         return true;
     }
 
     public boolean login(String email, String password) {
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isPresent() && userOpt.get().getPassword().equals(password)) {
-            currentUser = userOpt.get();
-            return true;
+        if (userOpt.isPresent()) {
+            if(PasswordService.verifyPassword(password,userOpt.get().getPassword())) {
+                currentUser = userOpt.get();
+                return true;
+            }
         }
         return false;
     }
@@ -38,7 +41,9 @@ public class AuthService {
     }
 
     public boolean changePassword(String password , UUID userId){
-        userRepository.updatePassword(password , userId);
+        String hashedPassword = PasswordService.hashPassword(password);
+        System.out.println(hashedPassword);
+        userRepository.updatePassword(hashedPassword , userId);
         return true;
     }
 

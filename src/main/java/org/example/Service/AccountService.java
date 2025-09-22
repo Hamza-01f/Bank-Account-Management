@@ -6,6 +6,7 @@ import org.example.Repository.AccountRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -19,11 +20,11 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public boolean createAccount(UUID ownerId){
+    public Account createAccount(UUID ownerId){
         String accountId = generateAccountId();
         Account account = new Account(accountId , ownerId);
         accountRepository.save(account);
-        return true;
+        return account;
     }
 
     private String generateAccountId(){
@@ -38,30 +39,98 @@ public class AccountService {
         return "BK-" + digits + "-" + part1;
     }
 
-    public List<Account> getMyAccounts(UUID ownerId){
-        return accountRepository.findMyAccounts(ownerId);
+//    public List<Account> getMyAccounts(UUID ownerId){
+//        return accountRepository.findMyAccounts(ownerId);
+//    }
+//
+//    public List<Account> getAllAccounts(UUID userId){
+//        return  accountRepository.getAllAccounts(userId);
+//    }
+    public boolean withdraw(String accountId , BigDecimal withdrawAmount , UUID userId){
+        Optional<Account> accountOpt = accountRepository.findById(accountId);
+
+        if (accountOpt.isEmpty()) {
+            throw new IllegalArgumentException("Account not found");
+        }
+
+        Account account = accountOpt.get();
+
+        if (!account.getUserId().equals(userId)) {
+            throw new SecurityException("Access denied: Not account owner");
+        }
+
+        if (!account.getIsActive()) {
+            throw new IllegalStateException("Account is closed");
+        }
+
+        if(account.getBalance().compareTo(withdrawAmount) < 0){
+            throw new IllegalArgumentException("Insufficient funds");
+        }
+
+        return accountRepository.withdraw(accountId, withdrawAmount);
+
+    }
+
+    public boolean deposit(String accountId , BigDecimal depositAmount , UUID userId){
+        Optional<Account> accountOpt = accountRepository.findById(accountId);
+
+        if (accountOpt.isEmpty()) {
+            throw new IllegalArgumentException("Account not found");
+        }
+
+        Account account = accountOpt.get();
+
+        if (!account.getUserId().equals(userId)) {
+            throw new SecurityException("Access denied: Not account owner");
+        }
+
+        if (!account.getIsActive()) {
+            throw new IllegalStateException("Account is closed");
+        }
+
+        return accountRepository.deposit(accountId, depositAmount);
+    }
+
+    public boolean closeAccount(String accountId, UUID userId){
+        Optional<Account> accountOpt = accountRepository.findById(accountId);
+
+        if (accountOpt.isEmpty()) {
+            throw new IllegalArgumentException("Account not found");
+        }
+
+        Account account = accountOpt.get();
+
+        if (!account.getUserId().equals(userId)) {
+            throw new SecurityException("Access denied: Not account owner");
+        }
+
+        if (!account.getIsActive()) {
+            throw new IllegalStateException("Account already closed");
+        }
+
+        if (account.getBalance().compareTo(BigDecimal.ZERO) != 0) {
+            throw new IllegalStateException("Cannot close account with balance");
+        }
+
+        return accountRepository.closeAccount(accountId);
+    }
+
+    public List<Account> getUserAccounts(UUID userId) {
+        return accountRepository.findByUserId(userId);
     }
 
     public List<Account> getAllAccounts(UUID userId){
-        return  accountRepository.getAllAccounts(userId);
-    }
-    public boolean withdraw(String accountId , BigDecimal withdrawAmount){
-        System.out.println("i am here is withdraw");
-        System.out.println(accountId);
-        System.out.println(withdrawAmount);
-        return accountRepository.withdraw(accountId , withdrawAmount);
+        return  accountRepository.findAllAccounts(userId);
     }
 
-    public boolean deposit(String accountId , BigDecimal depositAmount){
-        System.out.println("i am here in deposit");
-        System.out.println(accountId);
-        System.out.println(depositAmount);
-        return  accountRepository.deposit(accountId , depositAmount);
-    }
+    public Optional<Account> getAccount(String accountId, UUID userId) {
+        Optional<Account> accountOpt = accountRepository.findById(accountId);
 
-    public boolean closeAccount(String accountID){
-        accountRepository.closeAccount(accountID);
-        return  true;
+        if (accountOpt.isPresent() && !accountOpt.get().getUserId().equals(userId)) {
+            throw new SecurityException("Access denied: Not account owner");
+        }
+
+        return accountOpt;
     }
 
 
